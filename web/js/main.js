@@ -263,6 +263,14 @@ async function joinPlace(name, providedText){
 
     await spawn(parsed);
 
+    if (!window.RBLXnet) window.RBLXnet = new window.RBLXmultiplayer();
+    window.RBLXnet.connect({
+      placeId: name,
+      roomId: new URLSearchParams(location.search).get('room') || name,
+      name: (window.RBLXplayer && window.RBLXplayer.name) || 'Player1',
+      scene, world, ui
+    });
+
     sjobs=new window.RBLXscript.PlaceScriptRunner(world, ui, character);
     sjobs.init(parsed);
     /* PlaySolo creates the local Player first, then runs the place scripts;
@@ -434,7 +442,10 @@ function bindInput(canvas){
   ui.$chatInput.addEventListener('keydown', e=>{
     if (e.key==='Enter'){
       const t=ui.$chatInput.value.trim();
-      if (t){ ui.chat(t, (window.RBLXplayer&&window.RBLXplayer.name)||'Player1'); }   // name color auto from the mined classic palette
+      if (t){
+        if (window.RBLXnet && window.RBLXnet.connected) window.RBLXnet.sendChat(t);
+        else ui.chat(t, (window.RBLXplayer&&window.RBLXplayer.name)||'Player1');
+      }   // name color auto from the mined classic palette
       ui.$chatInput.value='';
       ui.hideChatInput();
       window.Sounds.sound('clickfast.wav', {volume:0.4});
@@ -522,6 +533,10 @@ function step(dt){
   let t=performance.now();
   if (window.RBLXdyn&&window.RBLXdyn._ready) window.RBLXdyn.step(dt);   /* assembly physics */
   let t2=performance.now(); perf.dynMs+=t2-t; t=t2;
+  if (window.RBLXnet) {
+    window.RBLXnet.update(dt);
+    window.RBLXnet.sendState(character, cam.yaw);
+  }
   if (character && controller){
     // camera-relative move basis: forward = (-sin yaw, 0, -cos yaw)
     const cy=Math.cos(cam.yaw), sy=Math.sin(cam.yaw);
@@ -596,5 +611,5 @@ function render(dt){
 }
 
 window.addEventListener('load', boot);
-window.__leaveGame=()=>{ location.reload(); };
+window.__leaveGame=()=>{ if(window.RBLXnet)window.RBLXnet.disconnect(); location.reload(); };
 })();
