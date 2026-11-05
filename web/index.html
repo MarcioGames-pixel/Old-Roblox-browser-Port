@@ -11,7 +11,7 @@
        base64 assets some places ship; blob: is the T-shirt preview.
      - file: keeps double-click (file://) usage working, where 'self' does
        not match a usable origin. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data: blob:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; media-src 'self' file: data: blob:; font-src 'self' file: data:; connect-src 'self' file:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data: blob:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; media-src 'self' file: data: blob:; font-src 'self' file: data:; connect-src 'self' file: ws: wss:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Play Roblox 0.3.368 (March 2007) in your browser</title>
 <meta name="description" content="Play the March 2007 Roblox client (version 0.3.368) in your browser. A WebGL port of the original engine, with the classic places, avatar colours, chat and tools, no install, no account.">
 <meta name="robots" content="index,follow,max-image-preview:large">
@@ -370,6 +370,7 @@ input{ cursor:text; }
 <script src="js/ui.js"></script>
 <script src="js/safechat.js"></script>
 <script src="js/startpage.js"></script>
+<script src="js/multiplayer.js"></script>
 <script src="places/index.js"></script>
 <script src="js/main.js"></script>
 <script src="js/version.js"></script>
