@@ -533,10 +533,7 @@ function step(dt){
   let t=performance.now();
   if (window.RBLXdyn&&window.RBLXdyn._ready) window.RBLXdyn.step(dt);   /* assembly physics */
   let t2=performance.now(); perf.dynMs+=t2-t; t=t2;
-  if (window.RBLXnet) {
-    window.RBLXnet.update(dt);
-    window.RBLXnet.sendState(character, cam.yaw);
-  }
+  if (window.RBLXnet) window.RBLXnet.update(dt);
   if (character && controller){
     // camera-relative move basis: forward = (-sin yaw, 0, -cos yaw)
     const cy=Math.cos(cam.yaw), sy=Math.sin(cam.yaw);
@@ -544,6 +541,9 @@ function step(dt){
                 .addScaledVector(_rdir.set(cy, 0, -sy), side);
     controller.step(dt, input);
     character.step(dt, input);
+  }
+  if (window.RBLXnet) {
+    window.RBLXnet.sendState(character, character ? character.group.rotation.y : 0, controller);
   }
   t2=performance.now(); perf.charMs+=t2-t; t=t2;
   if (tools){
